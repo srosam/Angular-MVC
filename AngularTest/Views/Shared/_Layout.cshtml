@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <base href="/"/>
+
+</head>
+<body>
+    <div ng-app="appMain" ng-controller="ControllerNumber1 as cn1">
+        <h1>[{{cn1.messageText}}]</h1>
+        <button ng-click="cn1.okClick()">OK</button>
+
+    <!--</div> --> <!--Close main div here to have no error but loose the ability for your appMain to have a wider reach-->
+
+        <div class="well well-lg" ng-controller="ControllerNumber2 as cn2"
+             id="subAppDiv">
+
+            <h2>
+                Controller #2 Main View (app silo)
+                <br />
+                [[{{messageText}}]]
+            </h2>
+            <button ng-click="nextClick()">NEXT</button>
+            @Html.Partial("~/Views/Shared/_ValidationErrors.cshtml")
+
+            <div ng-view></div>
+        </div>
+    </div> <!--CLOSE MAIN DIV here to have Error: [ng:areq] Argument 'ControllerNumber2' is not a function, got undefined-->
+    @RenderBody()
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    <script src="~/Scripts/angular.js"></script>
+    <script src="~/Scripts/angular-route.js"></script>
+    <script src="~/Scripts/App.js"></script>
+
+    <script type="text/javascript">
+        window.TestApp = {};
+        (function (ta) {
+            var rootPath;
+            ta.rootPath = rootPath;
+        }(window.TestApp));
+        TestApp.rootPath = '@Url.Content("~")';
+    </script>
+
+    <script type="text/javascript">
+
+        (function (ta) {
+            var vmHelper = function ($http, $q) {
+
+                var self = this;
+
+                self.modelIsValid = true;
+                self.modelErrors = [];
+
+                return this;
+            }
+            ta.vmHelper = vmHelper;
+        }(window.TestApp));
+
+        //bootstrap the subAppplication into the subAppDiv
+        angular.bootstrap(document.getElementById("subAppDiv"), ['subApplication']);
+    </script>
+
+</body>
+</html>
